@@ -1,11 +1,11 @@
-import "./App.css";
+import Home from "./assets/Pages/Home";
 
 function App() {
   //js
   return(
-    /* html and css */
-    <h1>Hello</h1>
-   );
+    
+    <Home/>
+     );
 }
 
 export default App;

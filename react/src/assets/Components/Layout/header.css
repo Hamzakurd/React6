@@ -1,0 +1,61 @@
+.navbar {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(90, 88, 87);
+  padding: 10px;
+  margin: 10px;
+  align-items: center;
+  max-width: 100%;
+}
+
+.nav-Links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  color: white;
+  list-style: none;
+  
+}
+
+.nav-Links li{
+    cursor: pointer;
+}
+h1 {
+  width: 100px;
+  height: fit-content;
+}
+.footer{
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(75, 75, 74);
+  padding: 10px;
+  margin: 10px;
+  align-items: center;
+  max-width: 100%;
+  color: white;
+  height: 30vh;
+  
+}
+
+.footer-Links,
+.footer-pages {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.footer-Links a,
+.footer-pages a {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+.footer-Links a:hover,
+.footer-pages a:hover {
+  color: blue;
+}
