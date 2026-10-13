@@ -1,40 +1,71 @@
 import Footer from "./assets/Components/Layout/Footer";
-import Greeting from "./assets/Components/Layout/Greeting";
+
 import Header from "./assets/Components/Layout/Header";
-import Student from "./assets/Components/Layout/Student";
-import Home from "./assets/Pages/Home";
+
+import { useState } from 'react';
+
 
 
 function App() {
-  return (
-    <>
+
+  const [data , setData] = useState({
+    name:"",
+    age:0,
+    unversity:"",
+    married:false,
+    hascar:false,
+  });
+  console.log(data);
+  
+  return ( <>
       <Header />
+      <div className="min-h-100">
 
-      <div className="min-h-[100vh] p-6">
-        
-        
-        <div className="flex flex-wrap justify-center gap-6">
-          <Student
-            name="Ahmad"
-            age={22}
-            major="Computer Science"
-            graduated={true}
-          />
 
-          <Student
-            name="Hamza"
-            age={20}
-            major="Computer Information Systems"
-            graduated={false}
+        <form action="">
+          <input
+           type="text"
+           placeholder="name"
+           name="name"
+           id=""
+           onChange={(e) => setData({...data , name: e.target.value})}
+          
           />
+          <input
+           type="number"
+           placeholder="age"
+           name="age"
+           id=""
+          
+          />
+          <select 
+          name="uni"
+          id=""
+          onChange={(e) => setData({...data, unversity: e.target.value})}>
+            <option value={"yarmouk"}>Yarmouk</option>
+            <option value={"Just"}>Just</option>
+            <option value={"Jadara"}>Jadara</option>
+            </select>
+            <div>
+              <label htmlFor="married"></label>
+              <input
+              type="radio"
+              name="married"
+              value={"yes"}
+             onChange={(e) => setData({...data , married: e.target.value})}/>
 
-          <Student
-            name="Omar"
-            age={21}
-            graduated={false}
-          />
-        </div>
+              <input
+              type="radio"
+              name="married"
+              value={"no"}
+             onChange={(e) => setData({...data , married: e.target.value})}/>
+            
+
+</div>
+</form>
       </div>
+      
+      
 
       <Footer />
     </>
