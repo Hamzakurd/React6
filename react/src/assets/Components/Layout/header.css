@@ -7,6 +7,7 @@
   margin: 10px;
   align-items: center;
   max-width: 100%;
+
 }
 
 .nav-Links {
@@ -26,6 +27,7 @@
 h1 {
   width: 100px;
   height: fit-content;
+    font-size: 35px;
 }
 .footer{
   flex-direction: row;
