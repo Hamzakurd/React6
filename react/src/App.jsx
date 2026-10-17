@@ -1,73 +1,30 @@
-import Footer from "./assets/Components/Layout/Footer";
-
-import Header from "./assets/Components/Layout/Header";
-
-import { useState } from 'react';
 
 
+import { Container } from "@mui/material";
+import Header from "./component/Auth/Home/Layout/Header.jsx";
+import About from "./component/Auth/Home/Layout/Section/About.jsx";
+import Cards from "./component/Auth/Home/Layout/taskMUI/Cards.jsx";
+import Footer from "./component/Auth/Home/Layout/taskMUI/Footer.jsx";
+import Services from "./component/Auth/Home/Layout/taskMUI/Services.jsx";
 
 function App() {
-
-  const [data , setData] = useState({
-    name:"",
-    age:0,
-    unversity:"",
-    married:false,
-    hascar:false,
-  });
-  console.log(data);
-  
-  return ( <>
+  return (
+    <>
+   
       <Header />
-      <div className="min-h-100">
-
-
-        <form action="">
-          <input
-           type="text"
-           placeholder="name"
-           name="name"
-           id=""
-           onChange={(e) => setData({...data , name: e.target.value})}
-          
-          />
-          <input
-           type="number"
-           placeholder="age"
-           name="age"
-           id=""
-          
-          />
-          <select 
-          name="uni"
-          id=""
-          onChange={(e) => setData({...data, unversity: e.target.value})}>
-            <option value={"yarmouk"}>Yarmouk</option>
-            <option value={"Just"}>Just</option>
-            <option value={"Jadara"}>Jadara</option>
-            </select>
-            <div>
-              <label htmlFor="married"></label>
-              <input
-              type="radio"
-              name="married"
-              value={"yes"}
-             onChange={(e) => setData({...data , married: e.target.value})}/>
-
-              <input
-              type="radio"
-              name="married"
-              value={"no"}
-             onChange={(e) => setData({...data , married: e.target.value})}/>
-            
-
-</div>
-</form>
-      </div>
+      <Container sx={{my:4 , minHeight:"100vh"}}>
+      <br/>
+      <br/>
+      <About/>
+      <br/>
+      <br/>
+      <Cards />
+      <br/>
+      <Services/>
+      </Container>
       
-      
-
-      <Footer />
+    
+    <Footer/>
     </>
   );
 }
