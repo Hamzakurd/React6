@@ -1,31 +1,19 @@
 
 
-import { Container } from "@mui/material";
-import Header from "./component/Auth/Home/Layout/Header.jsx";
-import About from "./component/Auth/Home/Layout/Section/About.jsx";
-import Cards from "./component/Auth/Home/Layout/taskMUI/Cards.jsx";
-import Footer from "./component/Auth/Home/Layout/taskMUI/Footer.jsx";
-import Services from "./component/Auth/Home/Layout/taskMUI/Services.jsx";
+import Home from "./Pages/Home/Home";
+import Landingpage from "./Pages/LandPages/LandingPage";
+import Login from "./component/Auth/Login";
+import Register from "./component/Auth/Register";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <>
-   
-      <Header />
-      <Container sx={{my:4 , minHeight:"100vh"}}>
-      <br/>
-      <br/>
-      <About/>
-      <br/>
-      <br/>
-      <Cards />
-      <br/>
-      <Services/>
-      </Container>
-      
-    
-    <Footer/>
-    </>
+    <Routes>
+      <Route path="/" element={<Landingpage />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/Register" element={<Register />} />
+      <Route path="/Login" element={<Login />} />
+    </Routes>
   );
 }
 
