@@ -2,18 +2,14 @@
 import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 import { useAuth } from "../Hooks/useAuth";
-import Sidebar from "./SideBar";
+
 
 export default function AdminDashboard() {
   const { currentUser } = useAuth();
-  const [open, setOpen] = useState(true);
-
+ 
   return (
     <Box sx={{ minHeight: "100vh" }}>
-      <Sidebar
-        open={open}
-        onclick={() => setOpen((prev) => !prev)}
-      />
+      
 
       <Box
         sx={{
