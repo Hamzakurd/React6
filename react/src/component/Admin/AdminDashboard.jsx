@@ -1,23 +1,34 @@
+
 import { Box, Typography } from "@mui/material";
+import { useState } from "react";
 import { useAuth } from "../Hooks/useAuth";
-import SideBar from "./SideBar";
+import Sidebar from "./SideBar";
 
-export default function AdminDashboard(){
-    const {currentUser} = useAuth();
-    return<>
-    <Box sx={{display:"flex" , flexDirection:"row"}}>
-        <Box sx={{flex:1}}>
-            <SideBar/>
-        </Box>
-       
-        <Box sx={{flex:4,my:4}}>
-            <Typography variant="h4">Welcome {currentUser.name}
+export default function AdminDashboard() {
+  const { currentUser } = useAuth();
+  const [open, setOpen] = useState(true);
 
-            </Typography>
-        </Box>
-        
+  return (
+    <Box sx={{ minHeight: "100vh" }}>
+      <Sidebar
+        open={open}
+        onclick={() => setOpen((prev) => !prev)}
+      />
+
+      <Box
+        sx={{
+          ml: open ? "300px" : "70px",
+          width: open ? "calc(100% - 300px)" : "calc(100% - 70px)",
+          minHeight: "100vh",
+          boxSizing: "border-box",
+          p: 3,
+          transition: "margin-left 0.3s ease, width 0.3s ease",
+        }}
+      >
+        <Typography variant="h4">
+          Welcome {currentUser.name}
+        </Typography>
+      </Box>
     </Box>
-    
-    
-    </>
+  );
 }
