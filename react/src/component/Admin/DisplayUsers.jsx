@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  
   Typography,
 } from "@mui/material";
 import { useAuth } from "../Hooks/useAuth";
@@ -30,7 +31,7 @@ export default function DisplayUsers() {
   const [openForm, setOpenForm] = useState(false);
   return (
     <>
-      <Box sx={{ width: "100%", textAlign: "center" }}>
+      <Box>
         <Typography variant="h3">Manage Users</Typography>
         <Divider sx={{ p: 2 }}>where to manage</Divider>
         <Button
@@ -42,55 +43,81 @@ export default function DisplayUsers() {
         </Button>
 
         {openForm && <Register />}
-     <TableContainer
-  sx={{
-    width: "90%",
-    mx: "auto",
-    overflowX: "auto"
-  }}
->
-          <Table sx={{ width: "100%" }}>
-    <TableHead>
-        <TableRow>
-            <TableCell align="center">#</TableCell>
-            <TableCell align="center">Name</TableCell>
-            <TableCell align="center">Email</TableCell>
-            <TableCell align="center">Role</TableCell>
-            <TableCell align="center">ACTIONS</TableCell>
-        </TableRow>
-    </TableHead>
+        <TableContainer sx={{ width: "100%", overflowX: "scroll" }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>ACTIONS</TableCell>
+              </TableRow>
+            </TableHead>
 
-    <TableBody>
-        {users.map((user, idx) => {
-            return (
-                <TableRow key={user.id}>
-                    <TableCell align="center">{idx + 1}</TableCell>
-                    <TableCell align="center">{user.name}</TableCell>
-                    <TableCell align="center">{user.email}</TableCell>
-                    <TableCell align="center">
-                        {isUpdated === user.id ? (
-                            <FormControl fullWidth>
-                                <InputLabel>Role</InputLabel>
-                                <Select
-                                    label="Role"
-                                    onChange={(e) => setNewRole(e.target.value)}
-                                >
-                                    <MenuItem value="user">User</MenuItem>
-                                    <MenuItem value="admin">Admin</MenuItem>
-                                </Select>
-                            </FormControl>
-                        ) : (
-                            user.role
-                        )}
+            <TableBody>
+              {users.map((user, idx) => {
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell>{idx + 1}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {isUpdated === user.id ? (
+                        <FormControl fullWidth>
+                          <InputLabel>Role</InputLabel>
+                          <Select
+                            label="Role"
+                            onChange={(e) => setNewRole(e.target.value)}
+                          >
+                            <MenuItem value={"user"}>User</MenuItem>
+                            <MenuItem value={"admin"}>Admin</MenuItem>
+                          </Select>
+                        </FormControl>
+                      ) : (
+                        <> {user.role}</>
+                      )}
                     </TableCell>
-                    <TableCell align="center">
-                        {/* اترك أزرار Edit وSave وDelete الموجودة عندك كما هي */}
+                    <TableCell>
+                      {isUpdated === user.id ? (
+                        <>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={() => handleSave()}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="warning"
+                            onClick={() => setIsUpdated(null)}
+                          >
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="info"
+                          onClick={() => setIsUpdated(user.id)}
+                        >
+                          Edit
+                        </Button>
+                      )}
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => deleteUser(user.id)}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
-                </TableRow>
-            );
-        })}
-    </TableBody>
-</Table>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </TableContainer>
       </Box>
     </>

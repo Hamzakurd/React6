@@ -10,6 +10,7 @@ import AdminDashboard from "./component/Admin/AdminDashboard";
 import AdminLayout from "./component/Admin/AdminLayout";
 import DisplayProduct from "./component/Admin/DisplayProducts"
 import DisplayUsers from "./component/Admin/DisplayUsers";
+import DisplayProducts from "./component/Admin/DisplayProducts";
 function App() {
   return (
     <Routes>
@@ -20,7 +21,7 @@ function App() {
       
       <Route path="/admin" element={<AdminLayout/>}>
         <Route index path="dashboard" element={<AdminDashboard />}/>
-        <Route path="manage-products" element={<DisplayProduct/>}/>
+        <Route path="manage-products" element={<DisplayProducts/>}/>
         <Route path="manage-users" element={<DisplayUsers/>}/>
       </Route>
     </Routes>

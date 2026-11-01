@@ -1,3 +1,4 @@
+// create context => store props => provide props
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
