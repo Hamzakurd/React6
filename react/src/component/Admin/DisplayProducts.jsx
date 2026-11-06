@@ -1,76 +1,71 @@
+import { useState } from "react";
+import { useProducts } from "../Hooks/UseProduct";
+import AddFormProduct from "./AdminComponent/AddFormProduct";
 
 import {
   Box,
   Button,
-  Typography,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
   Table,
-  TableHead,
   TableBody,
-  TableRow,
   TableCell,
   TableContainer,
-  Modal
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
 } from "@mui/material";
 
-import { useState } from "react";
+import EditModal from "./AdminComponent/EditModal";
 
 export default function DisplayProducts() {
-
-  const [openForm, setOpenForm] = useState(false);
-
-  const [products, setProducts] = useState([]);
-
-  const deleteProduct = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
-  };
-
-  const handleClose = () => {
-    setOpenForm(false);
-  };
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4
-  };
+  const {
+  products,
+  deleteProduct,
+  getProductById,
+  updatedProducts
+} = useProducts();
+  const [openModal, setOpenModal] = useState(false);
+  const [openAddForm, setOpenAddForm] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedproduct, setSelectedProduct] = useState(null);
 
   return (
     <>
-      <Box sx={{ width: "100%", textAlign: "center" }}>
+      <Box>
+        <Typography variant="h3">Manage products</Typography>
 
-        <Typography variant="h3">
-          Manage Products
-        </Typography>
+        <Divider sx={{ p: 2 }}>where to manage</Divider>
 
         <Button
           variant="contained"
           sx={{ m: 3 }}
-          onClick={() => setOpenForm(!openForm)}
+          onClick={() => setOpenAddForm(!openAddForm)}
         >
-          Add Product
+          {openAddForm ? "Cancel" : "Add product"}
         </Button>
 
-        <TableContainer
-          sx={{
-            width: "90%",
-            mx: "auto",
-            overflowX: "auto"
-          }}
-        >
+        <Box>
+          {openAddForm && (
+            <AddFormProduct setOpenAddForm={setOpenAddForm} />
+          )}
+        </Box>
 
-          <Table sx={{ width: "100%" }}>
-
+        <TableContainer sx={{ width: "100%", overflowX: "scroll" }}>
+          <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">#</TableCell>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Description</TableCell>
-                <TableCell align="center">Actions</TableCell>
+                <TableCell>#</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Stock</TableCell>
+                <TableCell>ACTIONS</TableCell>
               </TableRow>
             </TableHead>
 
@@ -78,22 +73,22 @@ export default function DisplayProducts() {
               {products.map((product, idx) => {
                 return (
                   <TableRow key={product.id}>
+                    <TableCell>{idx + 1}</TableCell>
+                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.description}</TableCell>
+                    <TableCell>{product.price}</TableCell>
+                    <TableCell>{product.stock}</TableCell>
 
-                    <TableCell align="center">
-                      {idx + 1}
-                    </TableCell>
-
-                    <TableCell align="center">
-                      {product.name}
-                    </TableCell>
-
-                    <TableCell align="center">
-                      {product.description}
-                    </TableCell>
-
-                    <TableCell align="center">
-                      <Button color="warning">
-                        Edit
+                    <TableCell>
+                      <Button
+                        color="info"
+                        onClick={async () => {
+                          const result = await getProductById(product.id);
+                          setSelectedProduct(result);
+                          setOpenModal(true);
+                        }}
+                      >
+                        View
                       </Button>
 
                       <Button
@@ -102,34 +97,88 @@ export default function DisplayProducts() {
                       >
                         Delete
                       </Button>
-                    </TableCell>
 
+                      <Button
+                        color="error"
+                        onClick={() => {
+                          setOpenEditModal(true);
+                          setSelectedProduct(product);
+                        }}
+                      >
+                        Update
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
-
           </Table>
         </TableContainer>
-
       </Box>
 
       <Modal
-        open={openForm}
-        onClose={handleClose}
+        open={openModal}
+        onClose={() => setOpenModal(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Add Product
-          </Typography>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 3,
+          }}
+        >
+          {selectedproduct && (
+            <>
+              <Typography variant="h3">
+                {selectedproduct.name}
+              </Typography>
 
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Product Form
-          </Typography>
+              <Typography variant="body2">
+                {selectedproduct.description}
+              </Typography>
+
+              <Typography variant="body2">
+                Price: {selectedproduct.price}
+              </Typography>
+
+              <Typography variant="body2">
+                Stock: {selectedproduct.stock}
+              </Typography>
+
+              <Button onClick={() => setOpenModal(false)}>
+                close
+              </Button>
+
+              <Button
+                onClick={() => (
+                  deleteProduct(selectedproduct.id),
+                  setOpenModal(false)
+                )}
+              >
+                Delete
+              </Button>
+            </>
+          )}
         </Box>
       </Modal>
+
+     {openEditModal && (
+  <EditModal
+    openEditModal={openEditModal}
+    setOpenEditModal={setOpenEditModal}
+    selectedproduct={selectedproduct}
+    updatedProducts={updatedProducts}
+  />
+)}
     </>
   );
 }

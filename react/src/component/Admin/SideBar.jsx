@@ -17,22 +17,26 @@ export default function Sidebar({ open, onclick }) {
 
   return (
     <Box
-      sx={{
-        flex: open ? "0 0 300px" : "0 0 70px",
-        width: open ? "300px" : "70px",
-        boxSizing: "border-box",
-        flexShrink: 0,
-        bgcolor: "#301934",
-        height: "100vh",
-        overflowY: "auto",
-        overflowX: "hidden",
-        color: "white",
-        fontSize: open ? "24px" : "30px",
-        fontWeight: "bold",
-        textAlign: open ? "left" : "center",
-        transition: "all 0.3s ease",
-      }}
-    >
+  sx={{
+    flex: open ? "0 0 300px" : "0 0 70px",
+    width: open ? "300px" : "70px",
+    boxSizing: "border-box",
+    flexShrink: 0,
+    bgcolor: "#301934",
+
+    minHeight: "100vh",
+    height: "auto",
+    alignSelf: "stretch",
+
+    overflowY: "auto",
+    overflowX: "hidden",
+    color: "white",
+    fontSize: open ? "24px" : "30px",
+    fontWeight: "bold",
+    textAlign: open ? "left" : "center",
+    transition: "all 0.3s ease",
+  }}
+>
       <Button onClick={onclick}>
         <ReorderIcon />
       </Button>

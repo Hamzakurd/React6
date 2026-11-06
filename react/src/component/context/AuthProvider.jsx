@@ -1,156 +1,177 @@
-// create context => store props => provide props
-import { useState } from "react";
+
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./AuthContext";
-
+import { useState } from "react";
+import { AuthContext } from "./authContext";
 export const AuthProvider = ({ children }) => {
-  // login, register, logout, currentUser
   const navigate = useNavigate();
-  // retrun group of things: function, variables(state)
-  const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("currentUser")) || {},
-  );
-  const [users, setUsers] = useState(
-    // will get users only once!
-    JSON.parse(localStorage.getItem("users")) || [],
-  );
-  //get all users
-  const getAllUsers = async () => {
+
+  const [currentUser, setCurrentUser] = useState(() => {
     try {
-      const users = JSON.parse(localStorage.getItem("users"));
-      setUsers(users);
+      return JSON.parse(localStorage.getItem("currentUser")) || null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [users, setUsers] = useState(() => {
+    try {
+      const savedUsers = JSON.parse(localStorage.getItem("users"));
+      return Array.isArray(savedUsers) ? savedUsers : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const getAllUsers = () => {
+    try {
+      const savedUsers = JSON.parse(localStorage.getItem("users"));
+      const updatedUsers = Array.isArray(savedUsers) ? savedUsers : [];
+
+      setUsers(updatedUsers);
+      return updatedUsers;
     } catch (error) {
-      toast.error(error);
-      console.log(error);
-      return;
+      toast.error("Failed to load users");
+      console.error(error);
+      return [];
     }
   };
 
   const register = async (data) => {
     try {
-      // handled error
-      // read user data = {name, email, password, confirmPassword}
-      // validation
       if (
-        !data.name ||
-        !data.email ||
+        !data.name?.trim() ||
+        !data.email?.trim() ||
         !data.password ||
         !data.confirmPassword
       ) {
-        toast.error("Please fill all fields!");
-        return;
+        throw new Error("Please fill all fields!");
       }
-      if (data.name.length < 3) {
-        toast.error("please enter a valid name");
-        return;
+
+      if (data.name.trim().length < 3) {
+        throw new Error("Please enter a valid name");
       }
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!emailRegex.test(data.email)) {
-        toast.error("please enter a valid email");
-        return;
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(data.email.trim())) {
+        throw new Error("Please enter a valid email");
       }
-      // check if the email already exiti in db
-      const isExist = users.find((user) => user.email === data.email);
+
+      const email = data.email.trim().toLowerCase();
+
+      const isExist = users.find(
+        (user) => user.email.toLowerCase() === email
+      );
+
       if (isExist) {
-        toast.error("you already have account!");
-        return;
+        throw new Error("You already have an account!");
       }
-      const passwordRgex =
+
+      const passwordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      if (!passwordRgex.test(data.password)) {
-        toast.error(
-          "password must contain at least one uppercase, one lowercase, one symbol, one number, and minim 8 chareters length",
+
+      if (!passwordRegex.test(data.password)) {
+        throw new Error(
+          "Password must contain uppercase, lowercase, number, symbol and at least 8 characters"
         );
-        return;
       }
+
       if (data.password !== data.confirmPassword) {
-        toast.error("passwords dont match!");
-        return;
+        throw new Error("Passwords don't match!");
       }
-      //user is fine!
+
       const newUser = {
-        name: data.name,
-        email: data.email,
-        password: data.password,
         id: Date.now(),
-        role: "user", //always the role is user
+        name: data.name.trim(),
+        email,
+        password: data.password,
+        role: "user",
       };
-      const newUsers = [...users, newUser]; //local storage
-      localStorage.setItem("users", JSON.stringify(newUsers)); //the new user now is in local storage
-      getAllUsers(); // will reread users from local storage
-      toast.success("registered successfully, please login to continue");
-      navigate("/login");
+
+      const newUsers = [...users, newUser];
+
+      localStorage.setItem("users", JSON.stringify(newUsers));
+      setUsers(newUsers);
+
+      toast.success("Registered successfully!");
+
+      navigate("/Login");
+
+      return true;
     } catch (error) {
-      toast.error(error);
-      console.log(error);
-      return;
-      // syntax error
-      // api error
+      toast.error(error.message);
+      throw error;
     }
   };
+
   const login = async (email, password) => {
     try {
-      if (!email || !password) {
-        toast.error("please fill all fields!");
-        return;
+      if (!email?.trim() || !password) {
+        throw new Error("Please fill all fields!");
       }
-      const isExsit = users.find((user) => user.email === email);
-      if (!isExsit) {
-        toast.error("you dont have an account!");
-        return;
+
+      const normalizedEmail = email.trim().toLowerCase();
+
+      const existingUser = users.find(
+        (user) => user.email.toLowerCase() === normalizedEmail
+      );
+
+      if (!existingUser) {
+        throw new Error("You don't have an account!");
       }
-      // in case the user exist, all user info will be store in isexist.
-      if (isExsit.password !== password) {
-        toast.error("password is not correct");
-        return;
+
+      if (existingUser.password !== password) {
+        throw new Error("Password is not correct");
       }
-      // store it inside state and the local storage
-      setCurrentUser(isExsit);
-      localStorage.setItem("currentUser", JSON.stringify(isExsit));
-      toast.success("login successfully");
-      //check role, if role is user, go to user pages.
-      // if role is admin, go to admin dashboard.
-      if (isExsit.role === "user") {
-        navigate("/home");
-      } else if (isExsit.role === "admin") {
+
+      const { password: _, ...userWithoutPassword } = existingUser;
+
+      setCurrentUser(userWithoutPassword);
+
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify(userWithoutPassword)
+      );
+
+      toast.success("Login successfully!");
+
+      if (existingUser.role === "admin") {
         navigate("/admin/dashboard");
+      } else {
+        navigate("/");
       }
+
+      return true;
     } catch (error) {
-      toast.error(error);
-      console.log(error);
-      return;
-      // syntax error
-      // api error
+      toast.error(error.message);
+      throw error;
     }
   };
-  const logout = async () => {
-    try {
-      localStorage.removeItem("currentUser");
-      toast.success("logout successfully");
-      navigate("/");
-      setCurrentUser(null);
-    } catch (error) {
-      toast.error(error);
-      console.log(error);
-      return;
-      // syntax error
-      // api error
-    }
+
+  const logout = () => {
+    localStorage.removeItem("currentUser");
+
+    setCurrentUser(null);
+
+    toast.success("Logout successfully");
+
+    navigate("/");
   };
+
   return (
     <AuthContext.Provider
-      // what to provide
       value={{
-        users,
         currentUser,
+        setCurrentUser,
+        users,
+        setUsers,
         login,
-        logout,
         register,
+        logout,
         getAllUsers,
       }}
     >
-      {/* for who provide */}
       {children}
     </AuthContext.Provider>
   );

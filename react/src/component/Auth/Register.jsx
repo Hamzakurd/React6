@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Box,
@@ -6,8 +5,10 @@ import {
   Button,
   Typography,
   Container,
-  Paper
+  Paper,
+  Alert,
 } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Hooks/useAuth";
 
@@ -19,20 +20,92 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
-  const handleRegister = (e) => {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e) => {
     e.preventDefault();
-    register(userData);
+
+    setError("");
+    setSuccess("");
+
+    if (
+      !userData.name.trim() ||
+      !userData.email.trim() ||
+      !userData.password ||
+      !userData.confirmPassword
+    ) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (userData.password !== userData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    if (typeof register !== "function") {
+      setError("Register function is not available. Check AuthContext.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await register(userData);
+
+      setSuccess("Registration successful!");
+
+      setUserData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+
+      navigate("/Login");
+    } catch (err) {
+      setError(err.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={4} sx={{ p: 4, mt: 6, borderRadius: 3 }}>
-        <Typography variant="h4" sx={{ textAlign: "center", mb: 3 }}>
-  Register
-</Typography>
+      <Paper
+        elevation={4}
+        sx={{
+          p: 4,
+          mt: 6,
+          borderRadius: 3,
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            textAlign: "center",
+            mb: 3,
+          }}
+        >
+          Register
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {success}
+          </Alert>
+        )}
 
         <Box component="form" onSubmit={handleRegister}>
           <TextField
@@ -41,7 +114,10 @@ export default function Register() {
             margin="normal"
             value={userData.name}
             onChange={(e) =>
-              setUserData({ ...userData, name: e.target.value })
+              setUserData({
+                ...userData,
+                name: e.target.value,
+              })
             }
             required
           />
@@ -53,7 +129,10 @@ export default function Register() {
             margin="normal"
             value={userData.email}
             onChange={(e) =>
-              setUserData({ ...userData, email: e.target.value })
+              setUserData({
+                ...userData,
+                email: e.target.value,
+              })
             }
             required
           />
@@ -65,7 +144,10 @@ export default function Register() {
             margin="normal"
             value={userData.password}
             onChange={(e) =>
-              setUserData({ ...userData, password: e.target.value })
+              setUserData({
+                ...userData,
+                password: e.target.value,
+              })
             }
             required
           />
@@ -77,13 +159,19 @@ export default function Register() {
             margin="normal"
             value={userData.confirmPassword}
             onChange={(e) =>
-              setUserData({ ...userData, confirmPassword: e.target.value })
+              setUserData({
+                ...userData,
+                confirmPassword: e.target.value,
+              })
             }
             required
           />
 
-          <Box >
-            <Typography>Already have an account?</Typography>
+          <Box sx={{ mt: 2 }}>
+            <Typography>
+              Already have an account?
+            </Typography>
+
             <Button onClick={() => navigate("/Login")}>
               Login
             </Button>
@@ -93,9 +181,13 @@ export default function Register() {
             type="submit"
             variant="contained"
             fullWidth
-            sx={{ mt: 3, py: 1.2 }}
+            disabled={loading}
+            sx={{
+              mt: 3,
+              py: 1.2,
+            }}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </Button>
         </Box>
       </Paper>
