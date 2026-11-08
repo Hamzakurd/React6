@@ -35,6 +35,9 @@ export default function Header() {
                             <IconButton color="inherit" onClick={() => navigate("/Register")}>
                                 Register
                             </IconButton>
+                             <IconButton color="inherit" onClick={() => navigate("/Contact")}>
+                                Contact
+                            </IconButton>
                         </>
                     ) : (
                         <IconButton

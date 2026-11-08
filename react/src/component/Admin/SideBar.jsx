@@ -84,7 +84,7 @@ export default function Sidebar({ open, onclick }) {
 
         <ListItem>
           <MessageIcon />
-          {open ? <ListItemButton>Manage Messages</ListItemButton> : null}
+          {open ? <ListItemButton onClick={() => navigate("/admin/manage-message")}>Manage Messages</ListItemButton> : null}
         </ListItem>
 
         <ListItem>

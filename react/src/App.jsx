@@ -11,6 +11,8 @@ import AdminLayout from "./component/Admin/AdminLayout";
 import DisplayProduct from "./component/Admin/DisplayProducts"
 import DisplayUsers from "./component/Admin/DisplayUsers";
 import DisplayProducts from "./component/Admin/DisplayProducts";
+import Contact from "./component/Contact/Contact";
+import ManageMessages from "./component/Admin/ManageMessages"
 function App() {
   return (
     <Routes>
@@ -18,11 +20,13 @@ function App() {
       <Route path="/Home" element={<Home />} />
       <Route path="/Register" element={<Register />} />
       <Route path="/Login" element={<Login />} />
+      <Route path="/Contact" element={<Contact />} />
       
       <Route path="/admin" element={<AdminLayout/>}>
         <Route index path="dashboard" element={<AdminDashboard />}/>
         <Route path="manage-products" element={<DisplayProducts/>}/>
         <Route path="manage-users" element={<DisplayUsers/>}/>
+        <Route path="manage-messages" element={<ManageMessages/>}/>
       </Route>
     </Routes>
   );
