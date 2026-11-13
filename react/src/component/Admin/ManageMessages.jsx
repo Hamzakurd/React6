@@ -1,3 +1,4 @@
+
 import {
   Button,
   Card,
@@ -11,8 +12,8 @@ import {
 
 import { useMessages } from "../Hooks/useMessages";
 
-export default function ManageMassage() {
-  const { messages } = useMessages();
+export default function ManageMessages() {
+  const { messages, updatedStatus } = useMessages();
 
   return (
     <Container sx={{ my: 2 }}>
@@ -38,15 +39,44 @@ export default function ManageMassage() {
                     Message: {msg.userMessage}
                   </Typography>
 
-                  <Rating value={Number(msg.userRating) || 0} readOnly />
+                  <Rating
+                    value={Number(msg.userRating) || 0}
+                    readOnly
+                  />
+
+                  <Typography variant="body1" sx={{ mt: 2 }}>
+                    Status: {msg.status}
+                  </Typography>
                 </CardContent>
 
                 <CardActions>
-                  <Button variant="contained" color="error">
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() =>
+                      updatedStatus(msg.id, "rejected")
+                    }
+                  >
                     Reject
                   </Button>
 
-                  <Button variant="contained" color="success">
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={() =>
+                      updatedStatus(msg.id, "pending")
+                    }
+                  >
+                    Pending
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={() =>
+                      updatedStatus(msg.id, "approved")
+                    }
+                  >
                     Approve
                   </Button>
                 </CardActions>
